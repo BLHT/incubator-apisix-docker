@@ -1,6 +1,6 @@
 FROM alpine:3.9
 
-ARG APISIX_VERSION=master
+ARG APISIX_VERSION=hellotalkmaster
 LABEL apisix_version="${APISIX_VERSION}"
 
 ARG RESTY_LUAROCKS_VERSION="3.2.1"
@@ -116,10 +116,7 @@ RUN apk add --no-cache --virtual .build-deps \
     && make -j${RESTY_J} \
     && make -j${RESTY_J} install \
     && cd /tmp \
-    && rm -rf \
-        openssl-${RESTY_OPENSSL_VERSION}.tar.gz openssl-${RESTY_OPENSSL_VERSION} \
-        pcre-${RESTY_PCRE_VERSION}.tar.gz pcre-${RESTY_PCRE_VERSION} \
-        openresty-${RESTY_VERSION}.tar.gz openresty-${RESTY_VERSION} \
+    && rm -rf * \
     && apk del .build-deps \
     && ln -sf /dev/stdout /usr/local/openresty/nginx/logs/access.log \
     && ln -sf /dev/stderr /usr/local/openresty/nginx/logs/error.log
@@ -162,7 +159,9 @@ RUN apk add --no-cache --virtual .build-deps \
             | sort -u \
     )" \
     && apk del .build-deps .gettext \
-    && mv /tmp/envsubst /usr/local/bin/
+    && mv /tmp/envsubst /usr/local/bin/ \
+    && cd /tmp \
+    && rm -rf * \
 
 ENV LUA_PATH="/usr/local/openresty/site/lualib/?.ljbc;/usr/local/openresty/site/lualib/?/init.ljbc;/usr/local/openresty/lualib/?.ljbc;/usr/local/openresty/lualib/?/init.ljbc;/usr/local/openresty/site/lualib/?.lua;/usr/local/openresty/site/lualib/?/init.lua;/usr/local/openresty/lualib/?.lua;/usr/local/openresty/lualib/?/init.lua;./?.lua;/usr/local/openresty/luajit/share/luajit-2.1.0-beta3/?.lua;/usr/local/share/lua/5.1/?.lua;/usr/local/share/lua/5.1/?/init.lua;/usr/local/openresty/luajit/share/lua/5.1/?.lua;/usr/local/openresty/luajit/share/lua/5.1/?/init.lua"
 ENV LUA_CPATH="/usr/local/openresty/site/lualib/?.so;/usr/local/openresty/lualib/?.so;./?.so;/usr/local/lib/lua/5.1/?.so;/usr/local/openresty/luajit/lib/lua/5.1/?.so;/usr/local/lib/lua/5.1/loadall.so;/usr/local/openresty/luajit/lib/lua/5.1/?.so"
