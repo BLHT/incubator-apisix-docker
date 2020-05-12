@@ -174,11 +174,14 @@ RUN apk add --no-cache --virtual .builddeps \
     pkgconfig \
     cmake \
     git \
+    tzdata \
     && luarocks install https://github.com/BLHT/incubator-apisix/raw/master/rockspec/apisix-${APISIX_VERSION}-0.rockspec --tree=/usr/local/apisix/deps \
     && cp /usr/local/apisix/deps/lib/luarocks/rocks-5.1/apisix/${APISIX_VERSION}-0/bin/apisix /usr/bin/ \
     && bin='#! /usr/local/openresty/luajit/bin/luajit' \
     && git clone https://github.com/BLHT/incubator-apisix-dashboard-built.git /usr/local/apisix/dashboard \
     && sed -i "1s@.*@$bin@" /usr/bin/apisix \
+    && cp /usr/share/zoneinfo/Asia/Hong_Kong /etc/localtime \
+    && echo "Asia/Hong_Kong" > /etc/timezone \
     && apk del .builddeps
 
 WORKDIR /usr/local/apisix
